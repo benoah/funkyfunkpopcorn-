@@ -1,0 +1,15 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+* {
+  margin: 0;
+}
+
+.app {
+  background-color: #111;
+}
+.react-player > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
