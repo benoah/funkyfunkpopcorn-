@@ -114,14 +114,14 @@ Prosjektet bruker følgende teknologier:
 
 ## Bruk
 
-- **Navigasjonsmenyen**: Naviger mellom forskjellige sider som "Startsiden", "Serier", og "Film".
-- **HeroSection**: Se populære filmer i en slider, se trailer ved å klikke på "Watch Trailer"-knappen.
-- **Trending-seksjonen**: Bla gjennom populære filmer og åpne modalen for mer informasjon om hver film.
+- Navigasjonsmenyen: Naviger mellom forskjellige sider som "Startsiden", "Serier", og "Film".
+- HeroSection: Se populære filmer i en slider, se trailer ved å klikke på "Watch Trailer"-knappen.
+- Trending-seksjonen: Bla gjennom populære filmer og åpne modalen for mer informasjon om hver film.
 
 ## Videre arbeid
 
 - Legge til brukerautentisering.
 - Forbedre modalen med flere detaljer om filmene.
-- Utvide med flere funksjoner som "favorittlister" og "anbefalinger".
+- Utvide med flere funksjoner som favorittlister og anbefalinger.
 
 For mer informasjon, sjekk [repoet på GitHub](https://github.com/benoah/funkyfunkpopcorn-/tree/main/src).

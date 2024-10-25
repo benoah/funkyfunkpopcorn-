@@ -25,68 +25,70 @@ type Genre = {
 };
 
 const Trending = () => {
+  // State to store movies, selected movie, and genre data
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [autoPlay, setAutoPlay] = useState<boolean>(false); // Added state
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [timeWindow, setTimeWindow] = useState<"day" | "week">("week");
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [autoPlay, setAutoPlay] = useState<boolean>(false); // Autoplay control for modal
+  const [loading, setLoading] = useState<boolean>(true); // Loading state for movie data
+  const [error, setError] = useState<string | null>(null); // Error state for fetching issues
+  const [timeWindow, setTimeWindow] = useState<"day" | "week">("week"); // Toggle between daily and weekly trending movies
+  const [genres, setGenres] = useState<Genre[]>([]); // Store genres data
+  const scrollContainerRef = useRef<HTMLDivElement>(null); // Ref for horizontal scroll container
 
-  // Fetch genres on mount
+  // Fetch genres when the component mounts
   useEffect(() => {
     const getGenres = async () => {
       try {
         const genresData = await fetchGenres();
-        setGenres(genresData);
+        setGenres(genresData); // Set genres in state
       } catch (error) {
         console.error("Error fetching genres:", error);
-        setError("Failed to fetch genres.");
+        setError("Failed to fetch genres."); // Set error if genres fetch fails
       }
     };
     getGenres();
   }, []);
 
-  // Function to fetch movies
+  // Function to fetch trending movies based on timeWindow (day/week)
   const getMovies = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchTrendingMovies(timeWindow);
+      setLoading(true); // Start loading
+      setError(null); // Reset error before fetching
+      const data = await fetchTrendingMovies(timeWindow); // Fetch trending movies
 
-      // Fetch details for each movie to get production countries
+      // Fetch additional details for each movie to get production countries
       const moviesWithDetails = await Promise.all(
         data.results.map(async (movie: Movie) => {
           const response = await fetch(
             `https://api.themoviedb.org/3/movie/${movie.id}?api_key=YOUR_API_KEY_HERE&language=en-US`
           );
           const movieDetails = await response.json();
-          return { ...movie, ...movieDetails };
+          return { ...movie, ...movieDetails }; // Merge base data with detailed data
         })
       );
 
-      setMovies(moviesWithDetails);
+      setMovies(moviesWithDetails); // Set movies in state
+      console.log(moviesWithDetails); // Log movie data
     } catch (error) {
       console.error("Error fetching trending movies:", error);
-      setError("Failed to fetch trending movies.");
+      setError("Failed to fetch trending movies."); // Set error if fetch fails
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
   };
 
-  // Fetch movies when timeWindow changes
+  // Re-fetch movies when the timeWindow changes
   useEffect(() => {
     getMovies();
   }, [timeWindow]);
 
-  // Scroll functions
+  // Scroll functions for the carousel
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
         top: 0,
         left: -Math.ceil(window.innerWidth / 1.5),
-        behavior: "smooth",
+        behavior: "smooth", // Smooth scrolling effect
       });
     }
   };
@@ -96,22 +98,22 @@ const Trending = () => {
       scrollContainerRef.current.scrollBy({
         top: 0,
         left: Math.ceil(window.innerWidth / 1.5),
-        behavior: "smooth",
+        behavior: "smooth", // Smooth scrolling effect
       });
     }
   };
 
-  // Modal functions
+  // Functions for opening and closing the modal
   const openModal = (movie: Movie, autoPlay = false) => {
-    setSelectedMovie(movie);
-    setAutoPlay(autoPlay); // Set autoPlay state
+    setSelectedMovie(movie); // Set selected movie for modal
+    setAutoPlay(autoPlay); // Control autoplay on modal open
   };
   const closeModal = () => {
-    setSelectedMovie(null);
-    setAutoPlay(false); // Reset autoPlay state
+    setSelectedMovie(null); // Deselect movie on modal close
+    setAutoPlay(false); // Reset autoplay
   };
 
-  // Map for genre lookup
+  // Map genres for quick lookup based on genre IDs
   const genreMap = genres.reduce((acc, genre) => {
     acc[genre.id] = genre.name;
     return acc;
@@ -241,7 +243,7 @@ const Trending = () => {
                   />
                   {/* Play Button Overlay */}
                   <button
-                    onClick={() => openModal(movie, true)} // Pass autoPlay as true
+                    onClick={() => openModal(movie, true)} // Open modal with autoplay
                     className="absolute inset-0 flex items-center justify-center text-white text-4xl opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50 rounded-md"
                   >
                     {/* Play Icon */}
@@ -264,7 +266,7 @@ const Trending = () => {
           movie={selectedMovie}
           open={true}
           onClose={closeModal}
-          autoPlay={autoPlay} // Pass autoPlay prop
+          autoPlay={autoPlay} // Pass autoplay setting to modal
         />
       )}
     </div>

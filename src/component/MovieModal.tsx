@@ -1,5 +1,3 @@
-// MovieModal.tsx
-
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -10,6 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import ReactPlayer from "react-player";
 
+// Define types
 type Genre = {
   id: number;
   name: string;
@@ -37,27 +36,29 @@ interface MovieModalProps {
   movie: Movie;
   open: boolean;
   onClose: () => void;
-  autoPlay?: boolean; // Added prop
+  autoPlay?: boolean; // Autoplay prop
 }
 
 const MovieModal: React.FC<MovieModalProps> = ({
   movie,
   open,
   onClose,
-  autoPlay = false, // Default to false
+  autoPlay = false, // Default autoplay to false
 }) => {
   const [trailerUrl, setTrailerUrl] = useState("");
   const [movieDetails, setMovieDetails] = useState<Movie>(movie);
   const [isTrailerLoading, setIsTrailerLoading] = useState<boolean>(false);
-  const [playing, setPlaying] = useState<boolean>(false); // Initialize to false
+  const [playing, setPlaying] = useState<boolean>(false);
 
-  // Adjusted API Key access
-  const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || "YOUR_API_KEY_HERE";
+  // Access API key from environment variables
+  const API_KEY = process.env.REACT_APP_TMDB_API_KEY || "YOUR_API_KEY_HERE"; // Use REACT_APP_ for React
 
   useEffect(() => {
     const fetchTrailerAndDetails = async () => {
       try {
         setIsTrailerLoading(true);
+
+        // Fetch trailer and movie details concurrently
         const [trailerResponse, detailsResponse] = await Promise.all([
           fetch(
             `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${API_KEY}`
@@ -67,12 +68,13 @@ const MovieModal: React.FC<MovieModalProps> = ({
           ),
         ]);
 
+        // Parse the responses
         const trailerData = await trailerResponse.json();
         const trailer = trailerData.results.find(
           (video: Video) => video.type === "Trailer" && video.site === "YouTube"
         );
+        setTrailerUrl(trailer ? trailer.key : ""); // Set trailer URL or empty string
 
-        setTrailerUrl(trailer ? trailer.key : "");
         const detailsData = await detailsResponse.json();
         setMovieDetails(detailsData);
       } catch (error) {
@@ -103,7 +105,6 @@ const MovieModal: React.FC<MovieModalProps> = ({
     };
   }, [onClose]);
 
-  // Handle autoPlay when the modal opens
   useEffect(() => {
     if (open && autoPlay && trailerUrl) {
       setPlaying(true);
