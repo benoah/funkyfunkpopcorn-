@@ -1,22 +1,22 @@
-import { useEffect, useRef, useState } from "react";
-import { fetchTopRatedMovies, fetchGenres } from "../../apiService";
-import MovieModal from "./MovieModal";
+import React, { useEffect, useRef, useState } from "react";
+import { fetchTopRatedSeries, fetchGenres } from "../../apiService";
+import MovieModal from "../movie/MovieModal";
 
-// Define the Movie type
-type Movie = {
+// Define the Series type (similar to Movie type)
+type Series = {
   id: number;
-  title: string;
+  name: string;
   poster_path: string;
   backdrop_path: string;
-  release_date: string;
+  first_air_date: string;
   vote_average: number;
   overview: string;
   genre_ids: number[];
 };
 
-const TopRatedMovies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+const TopRatedSeries = () => {
+  const [series, setSeries] = useState<Series[]>([]);
+  const [selectedSeries, setSelectedSeries] = useState<Series | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
@@ -35,26 +35,26 @@ const TopRatedMovies = () => {
     getGenres();
   }, []);
 
-  const getMovies = async () => {
+  const getSeries = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchTopRatedMovies();
-      setMovies(data.results);
+      const data = await fetchTopRatedSeries();
+      setSeries(data.results);
     } catch (error) {
-      console.error("Error fetching movies:", error);
-      setError("Failed to fetch top-rated movies.");
+      console.error("Error fetching series:", error);
+      setError("Failed to fetch top-rated series.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    getMovies();
+    getSeries();
   }, []);
 
-  const openModal = (movie: Movie) => setSelectedMovie(movie);
-  const closeModal = () => setSelectedMovie(null);
+  const openModal = (series: Series) => setSelectedSeries(series);
+  const closeModal = () => setSelectedSeries(null);
 
   const genreMap = genres.reduce((acc, genre) => {
     acc[genre.id] = genre.name;
@@ -83,44 +83,51 @@ const TopRatedMovies = () => {
 
   return (
     <div className="bg-black text-white py-8 pt-16">
-      <h4 className="text-3xl font-bold text-white mb-8"> Top Rated Movies</h4>
-      <div className="relative inline-block mb-4">
-        <select
-          value={selectedGenreId ?? ""}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSelectedGenreId(value ? parseInt(value) : null);
-          }}
-          className="appearance-none px-4 py-2 bg-gray-900 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 transition-colors cursor-pointer pr-10" // Adjust padding for icon space
-        >
-          <option value="">All Genres</option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.name}
-            </option>
-          ))}
-        </select>
+      <h4 className="text-3xl font-bold text-white mb-8"> Top Rated Series</h4>
 
-        {/* Custom dropdown icon */}
-        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-          <svg
-            className="w-4 h-4 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      {/* Genre Filter Dropdown */}
+      <div className="mb-2">
+        <label htmlFor="genre-filter" className="sr-only">
+          Filter by Genre
+        </label>
+        <div className="relative inline-block mb-4">
+          <select
+            id="genre-filter"
+            value={selectedGenreId ?? ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedGenreId(value ? parseInt(value) : null);
+            }}
+            className="appearance-none px-4 py-2 bg-gray-900 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 transition-colors cursor-pointer pr-10"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+            <option value="">All Genres</option>
+            {genres.map((genre) => (
+              <option key={genre.id} value={genre.id}>
+                {genre.name}
+              </option>
+            ))}
+          </select>
+          {/* Custom dropdown icon */}
+          <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+            <svg
+              className="w-4 h-4 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
         </div>
       </div>
 
       <div className="relative">
-        {movies.length > 5 && (
+        {series.length > 5 && (
           <button
             onClick={scrollLeft}
             aria-label="Scroll Left"
@@ -142,7 +149,7 @@ const TopRatedMovies = () => {
           </button>
         )}
 
-        {movies.length > 5 && (
+        {series.length > 5 && (
           <button
             onClick={scrollRight}
             aria-label="Scroll Right"
@@ -166,7 +173,7 @@ const TopRatedMovies = () => {
 
         <div
           ref={scrollContainerRef}
-          className="flex overflow-hidden scrollbar-hide space-x-4  py-4 snap-x snap-mandatory scroll-smooth"
+          className="flex overflow-hidden scrollbar-hide space-x-4 py-4 snap-x snap-mandatory scroll-smooth"
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
@@ -180,40 +187,40 @@ const TopRatedMovies = () => {
                   <div className="mt-2 h-4 bg-gray-700 rounded w-1/4"></div>
                 </div>
               ))
-            : movies
+            : series
                 .filter(
-                  (movie) =>
+                  (series) =>
                     selectedGenreId === null ||
-                    movie.genre_ids.includes(selectedGenreId)
+                    series.genre_ids.includes(selectedGenreId)
                 )
-                .map((movie) => (
+                .map((series) => (
                   <div
-                    key={movie.id}
-                    onClick={() => openModal(movie)}
+                    key={series.id}
+                    onClick={() => openModal(series)}
                     className="relative cursor-pointer snap-center shrink-0 w-[240px] md:w-[280px] lg:w-[320px] transform transition-transform duration-300 hover:scale-105 group"
                   >
                     <div className="relative overflow-hidden rounded-md group">
                       <img
                         src={
-                          movie.backdrop_path
-                            ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
+                          series.backdrop_path
+                            ? `https://image.tmdb.org/t/p/w500${series.backdrop_path}`
                             : "https://via.placeholder.com/500x750?text=No+Image"
                         }
-                        alt={movie.title}
+                        alt={series.name}
                         loading="lazy"
                         className="w-full h-auto object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-75 flex flex-col justify-end opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-md p-4">
-                        <h3 className="text-lg font-semibold">{movie.title}</h3>
+                        <h3 className="text-lg font-semibold">{series.name}</h3>
                         <p className="text-sm text-gray-400">
-                          {movie.release_date}
+                          {series.first_air_date}
                         </p>
                         <p className="text-sm text-yellow-500">
-                          Rating: {movie.vote_average}
+                          Rating: {series.vote_average}
                         </p>
                         <p className="text-sm text-gray-400">
                           Genres:{" "}
-                          {movie.genre_ids
+                          {series.genre_ids
                             .map((id) => genreMap[id])
                             .filter(Boolean)
                             .join(", ")}
@@ -225,11 +232,11 @@ const TopRatedMovies = () => {
         </div>
       </div>
 
-      {selectedMovie && (
-        <MovieModal movie={selectedMovie} open={true} onClose={closeModal} />
+      {selectedSeries && (
+        <MovieModal movie={selectedSeries} open={true} onClose={closeModal} />
       )}
     </div>
   );
 };
 
-export default TopRatedMovies;
+export default TopRatedSeries;

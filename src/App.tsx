@@ -17,6 +17,7 @@ function App() {
           <div className="app-content">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/series" element={<Series />} />
               {/* Legg til andre ruter her */}
             </Routes>
           </div>

@@ -120,10 +120,10 @@ const Trending = () => {
   }, {} as { [key: number]: string });
 
   return (
-    <div className="bg-black text-white py-8">
+    <div className="bg-black text-white py-8 pt-32">
       <div className="">
         {/* Section Title */}
-        <h4 className="text-3xl font-bold text-white mb-4">Trending Movies</h4>
+        <h4 className="text-3xl font-bold text-white mb-8">Trending Movies</h4>
 
         {/* Time Window Toggle Buttons */}
         <div className="flex space-x-4 mb-4">

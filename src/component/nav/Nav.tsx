@@ -19,7 +19,7 @@ function Nav() {
 
   return (
     <nav className="sticky top-0 transition-all ease-in duration-500 bg-black z-50 shadow-md">
-      <div className=" mx-auto flex justify-between items-center p-4">
+      <div className=" mx-auto flex justify-between items-center pt-16 pb-8">
         <div className="flex items-center space-x-2">
           <img
             className="h-8 w-auto sm:h-10"
@@ -30,7 +30,7 @@ function Nav() {
           <h4 className="text-[#e50914] text-lg font-bold sm:block">Popcorn</h4>
         </div>
 
-        <ul className="hidden md:flex space-x-4 text-white">
+        <ul className="hidden md:flex space-x-8 text-white">
           <li>
             <Link to="/" className="text-[#e5e5e5] hover:text-[#e50914]">
               Startsiden

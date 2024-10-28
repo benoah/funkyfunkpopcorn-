@@ -26,6 +26,18 @@ type Movie = {
   adult?: boolean;
 };
 
+type Series = {
+  id: number;
+  name: string;
+  poster_path: string;
+  backdrop_path: string;
+  first_air_date: string;
+  vote_average: number;
+  overview: string;
+  genres?: Genre[];
+  adult?: boolean;
+};
+
 type Video = {
   key: string;
   site: string;
@@ -33,7 +45,7 @@ type Video = {
 };
 
 interface MovieModalProps {
-  movie: Movie;
+  movie: Movie | Series;
   open: boolean;
   onClose: () => void;
   autoPlay?: boolean; // Autoplay prop
@@ -46,7 +58,7 @@ const MovieModal: React.FC<MovieModalProps> = ({
   autoPlay = false, // Default autoplay to false
 }) => {
   const [trailerUrl, setTrailerUrl] = useState("");
-  const [movieDetails, setMovieDetails] = useState<Movie>(movie);
+  const [movieDetails, setMovieDetails] = useState<Movie | Series>(movie);
   const [isTrailerLoading, setIsTrailerLoading] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
 
@@ -58,17 +70,16 @@ const MovieModal: React.FC<MovieModalProps> = ({
       try {
         setIsTrailerLoading(true);
 
-        // Fetch trailer and movie details concurrently
+        const mediaType = "title" in movie ? "movie" : "tv";
         const [trailerResponse, detailsResponse] = await Promise.all([
           fetch(
-            `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${API_KEY}`
+            `https://api.themoviedb.org/3/${mediaType}/${movie.id}/videos?api_key=${API_KEY}`
           ),
           fetch(
-            `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}`
+            `https://api.themoviedb.org/3/${mediaType}/${movie.id}?api_key=${API_KEY}`
           ),
         ]);
 
-        // Parse the responses
         const trailerData = await trailerResponse.json();
         const trailer = trailerData.results.find(
           (video: Video) => video.type === "Trailer" && video.site === "YouTube"
@@ -163,7 +174,7 @@ const MovieModal: React.FC<MovieModalProps> = ({
                   {movie.backdrop_path ? (
                     <img
                       src={`https://image.tmdb.org/t/p/w780/${movie.backdrop_path}`}
-                      alt={movie.title}
+                      alt={"title" in movie ? movie.title : movie.name}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -177,16 +188,16 @@ const MovieModal: React.FC<MovieModalProps> = ({
               )}
             </div>
 
-            {/* Movie Details */}
+            {/* Movie/Series Details */}
             <div className="p-6 text-white relative z-10 bg-black">
-              {/* Movie Title */}
+              {/* Title */}
               <motion.h2
                 className="text-2xl md:text-3xl font-bold mb-4 text-red-600"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                {movieDetails.title}
+                {"title" in movie ? movie.title : movie.name}
               </motion.h2>
               <hr />
 
@@ -209,16 +220,20 @@ const MovieModal: React.FC<MovieModalProps> = ({
                 </button>
               </div>
 
-              {/* Movie Info */}
+              {/* Info */}
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className="px-3 py-1 bg-gray-800 rounded-full text-sm">
-                  {new Date(movieDetails.release_date).getFullYear()}
+                  {new Date(
+                    "release_date" in movie
+                      ? movie.release_date
+                      : movie.first_air_date
+                  ).getFullYear()}
                 </span>
                 <span className="px-3 py-1 bg-gray-800 rounded-full text-sm">
-                  {movieDetails.adult ? "18+" : "PG"}
+                  {movie.adult ? "18+" : "PG"}
                 </span>
                 <span className="px-3 py-1 bg-yellow-500 text-black rounded-full text-sm">
-                  ⭐ {movieDetails.vote_average.toFixed(1)}
+                  ⭐ {movie.vote_average.toFixed(1)}
                 </span>
               </div>
 

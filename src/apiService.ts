@@ -77,11 +77,11 @@ export const fetchGenres = async () => {
 // Henter populære serier
 export const fetchPopularSeries = async () => {
   try {
-    const response = await axiosInstance.get("/tv/popular"); // Gjør en GET-forespørsel til /tv/popular
-    return response.data; // Returnerer dataene fra responsen
+    const response = await axiosInstance.get(`/tv/popular`); // Gjør en GET-forespørsel til /tv/popular
+    return response.data;
   } catch (error) {
-    console.error("Error fetching popular series:", error); // Logger feilmeldinger
-    throw error; // Kaster feilen videre
+    console.error("Error fetching popular series:", error);
+    throw error;
   }
 };
 
@@ -92,6 +92,28 @@ export const fetchTopRatedSeries = async () => {
     return response.data; // Returnerer dataene fra responsen
   } catch (error) {
     console.error("Error fetching top-rated series:", error); // Logger feilmeldinger
+    throw error; // Kaster feilen videre
+  }
+};
+
+// Henter trending serier
+export const fetchTrendingSeries = async (timeWindow = "week") => {
+  try {
+    const response = await axiosInstance.get(`/trending/tv/${timeWindow}`); // Gjør en GET-forespørsel til /trending/tv/{timeWindow}
+    return response.data; // Returnerer dataene fra responsen
+  } catch (error) {
+    console.error("Error fetching trending series:", error); // Logger feilmeldinger
+    throw error; // Kaster feilen videre
+  }
+};
+
+// Henter videoer for en gitt serie
+export const fetchSeriesVideos = async (seriesId: number) => {
+  try {
+    const response = await axiosInstance.get(`/tv/${seriesId}/videos`); // Gjør en GET-forespørsel til /tv/{seriesId}/videos
+    return response.data.results; // Returnerer en liste over videoer
+  } catch (error) {
+    console.error("Error fetching series videos:", error); // Logger feilmeldinger
     throw error; // Kaster feilen videre
   }
 };
