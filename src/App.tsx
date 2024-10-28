@@ -6,6 +6,7 @@ import Series from "./pages/Series";
 import NewPopular from "./pages/NewPopular";
 import MyList from "./pages/MyList";
 import Home from "./pages/Home";
+import "./App.css";
 
 function App() {
   return (

@@ -1,7 +1,7 @@
 // Trending.tsx
 
 import React, { useState, useEffect, useRef } from "react";
-import { fetchGenres, fetchTrendingMovies } from "../apiService";
+import { fetchGenres, fetchTrendingMovies } from "../../apiService";
 import MovieModal from "./MovieModal";
 import { motion } from "framer-motion";
 
@@ -212,7 +212,7 @@ const Trending = () => {
         {/* Movie List */}
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-scroll scrollbar-hide space-x-4 py-4 snap-x snap-mandatory scroll-smooth"
+          className="flex overflow-x-scroll scrollbar-hide space-x-4 py-4 snap-x snap-mandatory scroll-smooth no-scrollbar"
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
@@ -254,6 +254,9 @@ const Trending = () => {
                     >
                       <path d="M4 2v20l17-10L4 2z" />
                     </svg>
+                    <p className="absolute  flex items-center justify-center text-white text-4xl opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50 rounded-md">
+                      {movie.title}
+                    </p>
                   </button>
                 </div>
               ))}

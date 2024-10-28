@@ -8,7 +8,7 @@ import {
   fetchTrendingMovies,
   fetchGenres,
   fetchMovieVideos,
-} from "../apiService";
+} from "../../apiService";
 import styled from "styled-components";
 
 // TypeScript types for the data

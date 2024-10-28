@@ -13,3 +13,12 @@
   top: 0;
   left: 0;
 }
+/* Custom scrollbar-hiding style */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome, Safari and Opera */
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
