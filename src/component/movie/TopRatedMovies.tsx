@@ -82,43 +82,47 @@ const TopRatedMovies = () => {
   };
 
   return (
-    <div className="bg-black text-white py-8 pt-16">
-      <h4 className="text-3xl font-bold text-white mb-8"> Top Rated Movies</h4>
-      <div className="relative inline-block mb-4">
-        <select
-          value={selectedGenreId ?? ""}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSelectedGenreId(value ? parseInt(value) : null);
-          }}
-          className="appearance-none px-4 py-2 bg-gray-900 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 transition-colors cursor-pointer pr-10" // Adjust padding for icon space
-        >
-          <option value="">All Genres</option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.name}
-            </option>
-          ))}
-        </select>
-
-        {/* Custom dropdown icon */}
-        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-          <svg
-            className="w-4 h-4 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+    <>
+      <div className="relative inline-block ">
+        <div className="">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide text-[#dcdccd] mb-6">
+            Top Rated Movies
+          </h2>
+          <div className="relative inline-block mb-4">
+            <select
+              id="genre-filter"
+              value={selectedGenreId ?? ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSelectedGenreId(value ? parseInt(value) : null);
+              }}
+              className="appearance-none px-4 py-2 bg-[#151717]/70 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffb1b1] transition-colors cursor-pointer pr-10 backdrop-blur-lg border border-[#ffffff30]"
+            >
+              <option value="">All Genres</option>
+              {genres.map((genre) => (
+                <option key={genre.id} value={genre.id}>
+                  {genre.name}
+                </option>
+              ))}
+            </select>
+            {/* Custom dropdown icon */}
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg
+                className="w-4 h-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.08z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
-
       <div className="relative">
         {movies.length > 5 && (
           <button
@@ -166,7 +170,7 @@ const TopRatedMovies = () => {
 
         <div
           ref={scrollContainerRef}
-          className="flex overflow-hidden scrollbar-hide space-x-4  py-4 snap-x snap-mandatory scroll-smooth"
+          className="flex overflow-hidden scrollbar-hide space-x-4  snap-x snap-mandatory scroll-smooth"
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
@@ -224,11 +228,10 @@ const TopRatedMovies = () => {
                 ))}
         </div>
       </div>
-
       {selectedMovie && (
         <MovieModal movie={selectedMovie} open={true} onClose={closeModal} />
       )}
-    </div>
+    </>
   );
 };
 

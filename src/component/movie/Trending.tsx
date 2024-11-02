@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 type Movie = {
   id: number;
   title: string;
+
   poster_path: string;
   backdrop_path: string;
   release_date: string;
@@ -120,34 +121,32 @@ const Trending = () => {
   }, {} as { [key: number]: string });
 
   return (
-    <div className="bg-black text-white py-8 pt-32">
-      <div className="">
-        {/* Section Title */}
-        <h4 className="text-3xl font-bold text-white mb-8">Trending Movies</h4>
-
-        {/* Time Window Toggle Buttons */}
-        <div className="flex space-x-4 mb-4">
-          <button
-            className={`py-1 transition-all border-b-2 ${
-              timeWindow === "day"
-                ? "border-red-600 text-white font-semibold"
-                : "border-transparent text-gray-400 hover:text-white"
-            }`}
-            onClick={() => setTimeWindow("day")}
-          >
-            Today
-          </button>
-          <button
-            className={`px-4 py-1 transition-all border-b-2 ${
-              timeWindow === "week"
-                ? "border-red-600 text-white font-semibold"
-                : "border-transparent text-gray-400 hover:text-white"
-            }`}
-            onClick={() => setTimeWindow("week")}
-          >
-            This Week
-          </button>
-        </div>
+    <div className="container">
+      {/* Time Window Toggle Buttons */}
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide text-[#dcdccd] mb-4">
+        Trending Now
+      </h2>
+      <div className="flex space-x-2 mb-4">
+        <button
+          className={`py-1 transition-all ${
+            timeWindow === "day"
+              ? "border-b-2 border-[#ffb1b1]  font-semibold"
+              : "border-b-2 border-transparent text-gray-400 hover:text-white"
+          }`}
+          onClick={() => setTimeWindow("day")}
+        >
+          Today
+        </button>
+        <button
+          className={`px-4 py-1 transition-all ${
+            timeWindow === "week"
+              ? "border-b-2 border-[#ffb1b1] text-white font-semibold"
+              : "border-b-2 border-transparent text-gray-400 hover:text-white"
+          }`}
+          onClick={() => setTimeWindow("week")}
+        >
+          This Week
+        </button>
       </div>
 
       {/* Error Message */}
@@ -212,7 +211,7 @@ const Trending = () => {
         {/* Movie List */}
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-scroll scrollbar-hide space-x-4 py-4 snap-x snap-mandatory scroll-smooth no-scrollbar"
+          className="flex overflow-x-scroll space-x-4 py-4 scroll-smooth scrollbar-hide"
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
@@ -254,9 +253,6 @@ const Trending = () => {
                     >
                       <path d="M4 2v20l17-10L4 2z" />
                     </svg>
-                    <p className="absolute  flex items-center justify-center text-white text-4xl opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50 rounded-md">
-                      {movie.title}
-                    </p>
                   </button>
                 </div>
               ))}

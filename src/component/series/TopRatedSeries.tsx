@@ -82,14 +82,17 @@ const TopRatedSeries = () => {
   };
 
   return (
-    <div className="bg-black text-white py-8 pt-16">
-      <h4 className="text-3xl font-bold text-white mb-8"> Top Rated Series</h4>
-
-      {/* Genre Filter Dropdown */}
-      <div className="mb-2">
-        <label htmlFor="genre-filter" className="sr-only">
-          Filter by Genre
-        </label>
+    <>
+      <div className="relative inline-block">
+        <h2
+          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide text-[#dcdccd] mb-6"
+          style={{
+            lineHeight: "16.8px",
+            letterSpacing: "normal",
+          }}
+        >
+          Top Rated Series
+        </h2>
         <div className="relative inline-block mb-4">
           <select
             id="genre-filter"
@@ -98,7 +101,7 @@ const TopRatedSeries = () => {
               const value = e.target.value;
               setSelectedGenreId(value ? parseInt(value) : null);
             }}
-            className="appearance-none px-4 py-2 bg-gray-900 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 transition-colors cursor-pointer pr-10"
+            className="appearance-none px-4 py-2 bg-[#151717]/70 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#ffb1b1] transition-colors cursor-pointer pr-10 backdrop-blur-lg border border-[#ffffff30]"
           >
             <option value="">All Genres</option>
             {genres.map((genre) => (
@@ -107,7 +110,6 @@ const TopRatedSeries = () => {
               </option>
             ))}
           </select>
-          {/* Custom dropdown icon */}
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
             <svg
               className="w-4 h-4 text-white"
@@ -128,52 +130,52 @@ const TopRatedSeries = () => {
 
       <div className="relative">
         {series.length > 5 && (
-          <button
-            onClick={scrollLeft}
-            aria-label="Scroll Left"
-            className="absolute top-1/2 left-2 z-10 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity bg-black/50 rounded-full"
-          >
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <>
+            <button
+              onClick={scrollLeft}
+              aria-label="Scroll Left"
+              className="absolute top-1/2 left-2 z-10 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity bg-black/50 rounded-full"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-        )}
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
 
-        {series.length > 5 && (
-          <button
-            onClick={scrollRight}
-            aria-label="Scroll Right"
-            className="absolute top-1/2 right-2 z-10 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity bg-black/50 rounded-full "
-          >
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            <button
+              onClick={scrollRight}
+              aria-label="Scroll Right"
+              className="absolute top-1/2 right-2 z-10 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity bg-black/50 rounded-full"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </>
         )}
 
         <div
           ref={scrollContainerRef}
-          className="flex overflow-hidden scrollbar-hide space-x-4 py-4 snap-x snap-mandatory scroll-smooth"
+          className="flex overflow-hidden scrollbar-hide space-x-4 snap-x snap-mandatory scroll-smooth"
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
@@ -189,38 +191,38 @@ const TopRatedSeries = () => {
               ))
             : series
                 .filter(
-                  (series) =>
+                  (serie) =>
                     selectedGenreId === null ||
-                    series.genre_ids.includes(selectedGenreId)
+                    serie.genre_ids.includes(selectedGenreId)
                 )
-                .map((series) => (
+                .map((serie) => (
                   <div
-                    key={series.id}
-                    onClick={() => openModal(series)}
+                    key={serie.id}
+                    onClick={() => openModal(serie)}
                     className="relative cursor-pointer snap-center shrink-0 w-[240px] md:w-[280px] lg:w-[320px] transform transition-transform duration-300 hover:scale-105 group"
                   >
                     <div className="relative overflow-hidden rounded-md group">
                       <img
                         src={
-                          series.backdrop_path
-                            ? `https://image.tmdb.org/t/p/w500${series.backdrop_path}`
+                          serie.backdrop_path
+                            ? `https://image.tmdb.org/t/p/w500${serie.backdrop_path}`
                             : "https://via.placeholder.com/500x750?text=No+Image"
                         }
-                        alt={series.name}
+                        alt={serie.name}
                         loading="lazy"
                         className="w-full h-auto object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-75 flex flex-col justify-end opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-md p-4">
-                        <h3 className="text-lg font-semibold">{series.name}</h3>
+                        <h3 className="text-lg font-semibold">{serie.name}</h3>
                         <p className="text-sm text-gray-400">
-                          {series.first_air_date}
+                          {serie.first_air_date}
                         </p>
                         <p className="text-sm text-yellow-500">
-                          Rating: {series.vote_average}
+                          Rating: {serie.vote_average}
                         </p>
                         <p className="text-sm text-gray-400">
                           Genres:{" "}
-                          {series.genre_ids
+                          {serie.genre_ids
                             .map((id) => genreMap[id])
                             .filter(Boolean)
                             .join(", ")}
@@ -235,7 +237,7 @@ const TopRatedSeries = () => {
       {selectedSeries && (
         <MovieModal movie={selectedSeries} open={true} onClose={closeModal} />
       )}
-    </div>
+    </>
   );
 };
 

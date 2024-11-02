@@ -108,11 +108,10 @@ const PopularSeries = () => {
   }, {} as { [key: number]: string });
 
   return (
-    <div className="bg-black text-white py-8 pt-16">
-      <div>
-        <h4 className="text-3xl font-bold text-white mb-8">Popular Series</h4>
-      </div>
-
+    <div className="container">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide text-[#dcdccd] mb-4">
+        Popular Series
+      </h2>
       {error && (
         <div className="text-center text-red-500 mb-4">
           <p>{error}</p>
@@ -163,10 +162,9 @@ const PopularSeries = () => {
             />
           </svg>
         </button>
-
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-scroll scrollbar-hide space-x-4 py-4 snap-x snap-mandatory scroll-smooth no-scrollbar"
+          className="flex overflow-x-scroll space-x-4 py-6 scroll-smooth scrollbar-hide"
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
@@ -186,7 +184,10 @@ const PopularSeries = () => {
                   className="relative snap-center shrink-0 w-[240px] md:w-[280px] lg:w-[320px] transform transition-transform duration-300 hover:scale-105"
                 >
                   {/* Rank Badge */}
-                  <div className="absolute -bottom-6 left-2 bg-white/10 text-white font-extrabold text-3xl w-16 h-16 flex items-center justify-center backdrop-blur-md border border-white/30 shadow-lg transform transition-transform duration-300 hover:scale-110">
+                  <div
+                    className="absolute -bottom-6 left-2 sm:left-4 bg-white/10 text-white font-extrabold text-3xl w-16 h-16 sm:w-20 sm:h-20 sm:text-4xl flex items-center justify-center backdrop-blur-md border border-white/30 shadow-lg transform transition-transform duration-300 hover:scale-110 z-20"
+                    aria-label={`Rank ${index + 1}`}
+                  >
                     {index + 1}
                   </div>
                   <img

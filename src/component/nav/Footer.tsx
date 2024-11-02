@@ -1,9 +1,11 @@
 import React from "react";
-
-export default function Footer() {
+type FooterProps = {
+  className?: string;
+};
+const Footer: React.FC<FooterProps> = ({ className }) => {
   return (
     <footer className="bg-black text-gray-400 py-32 px-4">
-      <div className="max-w-12xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* About Us Section */}
         <div>
           <h3 className="text-lg font-semibold text-white mb-2">About Us</h3>
@@ -65,4 +67,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

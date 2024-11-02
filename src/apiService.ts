@@ -117,3 +117,14 @@ export const fetchSeriesVideos = async (seriesId: number) => {
     throw error; // Kaster feilen videre
   }
 };
+
+// Fetch upcoming movies
+export const fetchUpcomingMovies = async () => {
+  try {
+    const response = await axiosInstance.get("/movie/upcoming"); // Fetches upcoming movies
+    return response.data.results; // Returns the list of upcoming movies
+  } catch (error) {
+    console.error("Error fetching upcoming movies:", error);
+    throw error;
+  }
+};

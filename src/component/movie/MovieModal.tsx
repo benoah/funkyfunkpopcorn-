@@ -8,7 +8,6 @@ import {
 } from "@heroicons/react/24/solid";
 import ReactPlayer from "react-player";
 
-// Define types
 type Genre = {
   id: number;
   name: string;
@@ -17,11 +16,11 @@ type Genre = {
 type Movie = {
   id: number;
   title: string;
-  poster_path: string;
-  backdrop_path: string;
-  release_date: string;
-  vote_average: number;
-  overview: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  release_date?: string;
+  vote_average?: number;
+  overview?: string;
   genres?: Genre[];
   adult?: boolean;
 };
@@ -29,11 +28,11 @@ type Movie = {
 type Series = {
   id: number;
   name: string;
-  poster_path: string;
-  backdrop_path: string;
-  first_air_date: string;
-  vote_average: number;
-  overview: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  first_air_date?: string;
+  vote_average?: number;
+  overview?: string;
   genres?: Genre[];
   adult?: boolean;
 };
@@ -48,29 +47,31 @@ interface MovieModalProps {
   movie: Movie | Series;
   open: boolean;
   onClose: () => void;
-  autoPlay?: boolean; // Autoplay prop
+  autoPlay?: boolean;
 }
+
+const isMovie = (media: Movie | Series): media is Movie => {
+  return (media as Movie).title !== undefined;
+};
 
 const MovieModal: React.FC<MovieModalProps> = ({
   movie,
   open,
   onClose,
-  autoPlay = false, // Default autoplay to false
+  autoPlay = false,
 }) => {
   const [trailerUrl, setTrailerUrl] = useState("");
   const [movieDetails, setMovieDetails] = useState<Movie | Series>(movie);
   const [isTrailerLoading, setIsTrailerLoading] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
 
-  // Access API key from environment variables
-  const API_KEY = process.env.REACT_APP_TMDB_API_KEY || "YOUR_API_KEY_HERE"; // Use REACT_APP_ for React
+  const API_KEY = process.env.REACT_APP_TMDB_API_KEY || "YOUR_API_KEY_HERE";
 
   useEffect(() => {
     const fetchTrailerAndDetails = async () => {
       try {
         setIsTrailerLoading(true);
-
-        const mediaType = "title" in movie ? "movie" : "tv";
+        const mediaType = isMovie(movie) ? "movie" : "tv";
         const [trailerResponse, detailsResponse] = await Promise.all([
           fetch(
             `https://api.themoviedb.org/3/${mediaType}/${movie.id}/videos?api_key=${API_KEY}`
@@ -84,7 +85,7 @@ const MovieModal: React.FC<MovieModalProps> = ({
         const trailer = trailerData.results.find(
           (video: Video) => video.type === "Trailer" && video.site === "YouTube"
         );
-        setTrailerUrl(trailer ? trailer.key : ""); // Set trailer URL or empty string
+        setTrailerUrl(trailer ? trailer.key : "");
 
         const detailsData = await detailsResponse.json();
         setMovieDetails(detailsData);
@@ -131,30 +132,26 @@ const MovieModal: React.FC<MovieModalProps> = ({
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 backdrop-blur-lg"
           onClick={onClose}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative w-full max-w-3xl bg-gray-900 rounded-lg overflow-hidden shadow-xl"
+            className="relative w-full max-w-3xl bg-[#151717] rounded-lg overflow-hidden shadow-xl"
             onClick={(e) => e.stopPropagation()}
             initial={{ y: "-50%", opacity: 0 }}
             animate={{ y: "0%", opacity: 1 }}
             exit={{ y: "-50%", opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Close Button */}
+            {/* Top Right Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-2 right-2 text-white text-2xl font-bold hover:text-red-600 transition-colors"
+              className="absolute top-2 right-2 text-[#F7C600] text-2xl font-bold hover:text-red-600 transition-colors"
             >
               <XMarkIcon className="w-6 h-6" />
             </button>
 
-            {/* Background Video/Image */}
             <div className="relative w-full h-64 md:h-96 bg-black">
               {isTrailerLoading ? (
                 <div className="flex items-center justify-center h-full">
@@ -174,7 +171,7 @@ const MovieModal: React.FC<MovieModalProps> = ({
                   {movie.backdrop_path ? (
                     <img
                       src={`https://image.tmdb.org/t/p/w780/${movie.backdrop_path}`}
-                      alt={"title" in movie ? movie.title : movie.name}
+                      alt={isMovie(movie) ? movie.title : movie.name}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -182,62 +179,59 @@ const MovieModal: React.FC<MovieModalProps> = ({
                       <p>No image available</p>
                     </div>
                   )}
-                  {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                 </>
               )}
             </div>
 
-            {/* Movie/Series Details */}
-            <div className="p-6 text-white relative z-10 bg-black">
-              {/* Title */}
+            <div className="p-6 text-white relative z-10 bg-[#151717]">
               <motion.h2
-                className="text-2xl md:text-3xl font-bold mb-4 text-red-600"
+                className="text-2xl md:text-3xl font-bold mb-4 text-[#F7C600]"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                {"title" in movie ? movie.title : movie.name}
+                {isMovie(movie) ? movie.title : movie.name}
               </motion.h2>
-              <hr />
+              <hr className="border-gray-700" />
 
-              {/* Interactive Buttons */}
               <div className="flex items-center gap-4 mb-4 mt-8">
                 {!playing && trailerUrl && (
                   <button
-                    className="bg-white text-black px-6 py-2 rounded-full flex items-center hover:bg-gray-200 transition"
+                    className="bg-[#F7C600] text-[#151717] px-6 py-2 rounded-full flex items-center hover:bg-yellow-400 transition"
                     onClick={handlePlay}
                   >
                     <PlayIcon className="w-6 h-6 mr-2" />
                     Play
                   </button>
                 )}
-                <button className="bg-gray-800 bg-opacity-60 text-white px-4 py-2 rounded-full hover:bg-red-600 transition">
+                <button className="bg-[#151717] bg-opacity-60 text-[#dcdccd] px-4 py-2 rounded-full hover:bg-red-600 transition flex items-center justify-center">
+                  <PlayIcon className="w-6 h-6" />
+                </button>
+                <button className="bg-[#151717] bg-opacity-60 text-[#dcdccd] px-4 py-2 rounded-full hover:bg-red-600 transition flex items-center justify-center">
                   <PlusIcon className="w-6 h-6" />
                 </button>
-                <button className="bg-gray-800 bg-opacity-60 text-white px-4 py-2 rounded-full hover:bg-red-600 transition">
+                <button className="bg-[#151717] bg-opacity-60 text-[#dcdccd] px-4 py-2 rounded-full hover:bg-red-600 transition flex items-center justify-center">
                   <HeartIcon className="w-6 h-6" />
                 </button>
               </div>
 
-              {/* Info */}
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className="px-3 py-1 bg-gray-800 rounded-full text-sm">
                   {new Date(
-                    "release_date" in movie
-                      ? movie.release_date
-                      : movie.first_air_date
+                    isMovie(movie)
+                      ? movie.release_date || "2000-01-01"
+                      : movie.first_air_date || "2000-01-01"
                   ).getFullYear()}
                 </span>
                 <span className="px-3 py-1 bg-gray-800 rounded-full text-sm">
                   {movie.adult ? "18+" : "PG"}
                 </span>
                 <span className="px-3 py-1 bg-yellow-500 text-black rounded-full text-sm">
-                  ⭐ {movie.vote_average.toFixed(1)}
+                  ⭐ {movie.vote_average?.toFixed(1)}
                 </span>
               </div>
 
-              {/* Genres */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {movieDetails.genres?.map((genre: Genre) => (
                   <span
@@ -249,13 +243,20 @@ const MovieModal: React.FC<MovieModalProps> = ({
                 ))}
               </div>
 
-              {/* Overview */}
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-gray-300 ml-4 mb-16 leading-relaxed">
                 {movieDetails.overview}
               </p>
             </div>
+
+            {/* Bottom Right Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition z-20"
+            >
+              Close
+            </button>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
